@@ -16,7 +16,7 @@ watermark="no"
 # 默认视频位置
 folder="/root/live/videos"
 # 默认推流地址
-rtmp="rtmp://live-push.bilivideo.com/live-bvc/?streamname=live_105182778_88140690&key=15821d36ef2e34341cc2840736537535&schedule=rtmp&pflag=1"
+rtmp="rtmp://tx.direct.huya.com/huyalive/1517365139-1517365139-7232582023654946159-3034853734-10057-A-1683968275-1?seq=1710231899829&type=simple"
 # 默认码率
 # 视频直播服务不限制推流码率，支持常见分辨率以及对应的码率。
 # 以下列举常见分辨率及对应码率：
@@ -116,28 +116,27 @@ pop_file_by_index() {
   local index=$1
   local file
   if [[ -n $index ]]; then
-    # 如果传入了索引，则更新 next_index 的值
     next_index=$index
   fi
   if [[ $next_index -lt ${#queue[@]} ]]; then
-    # 如果队列中还有元素，则弹出下一个元素
     file=${queue[$next_index]}
     unset 'queue[$next_index]'
     ((next_index++))
   else
-    # 如果队列中没有元素了，则重新加载数据进队列
     read_files_into_queue "$folder"
     if [[ ${#queue[@]} -eq 0 ]]; then
       echo "队列中没有元素了"
       return
     fi
+    next_index=0
     file=${queue[0]}
     unset 'queue[0]'
-    next_index=1
+    ((next_index++))
   fi
   echo "$file"
   return
 }
+
 # 查看推流日志
 stream_log() {
   exec tail -n 50 -f output.log
@@ -252,7 +251,7 @@ stream_start() {
     while true; do
       video=$(pop_file_by_index $next_index)
       next_index=$((next_index + 1))
-      nohup ffmpeg -re -i "$video" -i "$image" -preset ultrafast -vcodec libx264 -r "$fps" -g 60 -b:v "$rate" -c:a aac -b:a 92k -strict -2 -f flv "${rtmp}" > output.log 2>&1 &
+      ffmpeg -re -i "$video" -i "$image" -preset ultrafast -vcodec libx264 -r "$fps" -g 60 -b:v "$rate" -c:a aac -b:a 92k -strict -2 -f flv "${rtmp}"
     done
   fi
   if [ "$watermark" = "no" ]; then
@@ -261,8 +260,7 @@ stream_start() {
       video=$(pop_file_by_index "$next_index")
       next_index=$((next_index + 1))
       #注释 -b:v 视频码率  -b:a 音频码率  -ss 00:01:40 从视频的第1分40秒开始推流 -r 60 帧率 -g 60 关键帧间隔
-      nohup ffmpeg -re -i "$video" -preset ultrafast -vcodec libx264 -r "$fps" -g 60 -b:v "$rate" -c:a aac -b:a 92k -strict -2 -f flv "${rtmp}" > output.log 2>&1 &
-      stream_log
+      ffmpeg -re -i "$video" -preset ultrafast -vcodec libx264 -r "$fps" -g 60 -b:v "$rate" -c:a aac -b:a 92k -strict -2 -f flv "${rtmp}"
     done
   fi
 }
