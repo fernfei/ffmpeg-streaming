@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import subprocess
+
+m_is_log = False
 def start_app():
     # 启动 nohup 进程
     process = subprocess.Popen(["python","live-streaming.py",">","output.log", "&"], stdout=subprocess.PIPE,
@@ -8,6 +10,8 @@ def start_app():
     # 将 PID 写入到文件中
     with open("live-streaming.pid", "w") as f:
         f.write(str(process.pid))
+
+    subprocess.call(["tail", "-f", "output.log"])
 
 def stop_app():
     # 从文件中读取 PID 并停止对应的进程
@@ -32,7 +36,8 @@ def main():
     elif args.command == 'restart':
         start_app()
     elif args.command == 'log':
-        subprocess.call(["tail", "-f", "output.log"])
+        global m_is_log
+        m_is_log = True
 
 main()
 
