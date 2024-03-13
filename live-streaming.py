@@ -57,10 +57,7 @@ def start_streaming():
         if index < len(m_videos):
             video = m_videos[index]
             print("Streaming " + video)
-            ffmpeg_pid = start_ffmpeg(video, m_config.get("fps", "30"), m_config.get("bitrate", "1000k"),m_config.get("rtmp", ""))
-            # 将 PID 写入到文件中
-            with open("ffmpeg.pid", "w") as f:
-                f.write(str(ffmpeg_pid))
+            base.cmd("ffmpeg", ["-re", "-i", video, "-preset", "ultrafast", "-vcodec", "libx264", "-r", m_config.get("fps", "30"), "-g", "60", "-b:v", m_config.get("bitrate", "1000k"), "-c:a", "aac", "-b:a", "92k", "-strict", "-2", "-f", "flv", m_config.get("rtmp", "")])
             index += 1
             m_config["index"] = index
         else:
@@ -68,9 +65,7 @@ def start_streaming():
 
 
 def stop_streaming():
-    with open("ffmpeg.pid", "r") as f:
-        pid = f.read().strip()
-    subprocess.call(["kill", "-9", pid])
+    subprocess.call(["killall", "-9", "ffmpeg"])
 
 def main():
     parser = argparse.ArgumentParser(description='FFMPEG Stream Server')

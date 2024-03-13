@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import os
 import subprocess
 
 import base
@@ -11,12 +12,12 @@ def tail_log():
 def start_app():
     print("Starting the app...")
     # 启动 nohup 进程
-    cmd = "nohup python live-streaming.py start > output.log 2>&1 &"
-    process = subprocess.Popen(cmd, shell=True)
+    base.cmd("nohup", ["python","live-streaming.py", "start","> output.log 2>&1 &"])
 
+    pid = os.getpid()
     # 将 PID 写入到文件中
     with open("live-streaming.pid", "w") as f:
-        f.write(str(process.pid))
+        f.write(str(pid))
 
     tail_log()
 
@@ -25,8 +26,8 @@ def stop_app():
     # 从文件中读取 PID 并停止对应的进程
     with open("live-streaming.pid", "r") as f:
         pid = f.read().strip()
-    base.cmd("python", ["live-streaming.py", "stop"])
     subprocess.call(["kill", "-9", pid])
+    base.cmd("python", ["live-streaming.py", "stop"])
 
 def restart_app():
     start_app()
