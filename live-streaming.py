@@ -93,6 +93,3 @@ def main():
         stop_streaming()
 
 main()
-
-if __name__ == '__main__':
-    main()
