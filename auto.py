@@ -2,7 +2,6 @@
 import argparse
 import subprocess
 
-m_is_log = False
 def start_app():
     # 启动 nohup 进程
     process = subprocess.Popen(["python","live-streaming.py",">","output.log", "&"], stdout=subprocess.PIPE,
@@ -25,13 +24,9 @@ def restart_app():
 
 def main():
     parser = argparse.ArgumentParser(description='Control nohup process.')
-    parser.add_argument('command', choices=['start', 'stop', 'restart','log'], help='Command to run.')
+    parser.add_argument('command', choices=['start', 'stop', 'restart'], help='Command to run.')
 
     args = parser.parse_args()
-
-    if args.command == 'log':
-        global m_is_log
-        m_is_log = True
     if args.command == 'start':
         start_app()
     elif args.command == 'stop':
