@@ -29,15 +29,15 @@ def main():
 
     args = parser.parse_args()
 
+    if args.command == 'log':
+        global m_is_log
+        m_is_log = True
     if args.command == 'start':
         start_app()
     elif args.command == 'stop':
         stop_app()
     elif args.command == 'restart':
         start_app()
-    elif args.command == 'log':
-        global m_is_log
-        m_is_log = True
 
 main()
 
