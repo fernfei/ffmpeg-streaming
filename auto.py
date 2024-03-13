@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 import argparse
 import subprocess
+import threading
+
+def tail_log():
+    subprocess.call(["tail", "-f", "output.log"])
 
 def start_app():
     # 启动 nohup 进程
-    process = subprocess.Popen(["python","live-streaming.py",">","output.log", "&"], stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
+    with open("output.log", "w") as f:
+        process = subprocess.Popen(["python", "live-streaming.py"], stdout=f, stderr=subprocess.STDOUT, shell=True)
+
     # 将 PID 写入到文件中
     with open("live-streaming.pid", "w") as f:
         f.write(str(process.pid))
 
-    subprocess.call(["tail", "-f", "output.log"])
+    # 在一个新的线程中查看日志
+    threading.Thread(target=tail_log).start()
 
 def stop_app():
     # 从文件中读取 PID 并停止对应的进程
