@@ -7,8 +7,8 @@ def tail_log():
 
 def start_app():
     # 启动 nohup 进程
-    with open("output.log", "w") as f:
-        process = subprocess.Popen(["python", "live-streaming.py"], stdout=f, stderr=subprocess.STDOUT, shell=True)
+    cmd = "nohup python live-streaming.py > output.log 2>&1 &"
+    process = subprocess.Popen(cmd, shell=True)
 
     # 将 PID 写入到文件中
     with open("live-streaming.pid", "w") as f:
