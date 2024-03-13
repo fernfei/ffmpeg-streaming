@@ -21,7 +21,7 @@ def restart_app():
 
 def main():
     parser = argparse.ArgumentParser(description='Control nohup process.')
-    parser.add_argument('command', choices=['start', 'stop', 'restart'], help='Command to run.')
+    parser.add_argument('command', choices=['start', 'stop', 'restart','log'], help='Command to run.')
 
     args = parser.parse_args()
 
@@ -31,6 +31,8 @@ def main():
         stop_app()
     elif args.command == 'restart':
         start_app()
+    elif args.command == 'log':
+        subprocess.call(["tail", "-f", "output.log"])
 
 main()
 
