@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import subprocess
-import threading
 
 def tail_log():
     subprocess.call(["tail", "-f", "output.log"])
