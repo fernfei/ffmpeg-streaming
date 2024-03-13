@@ -45,6 +45,7 @@ def ffmpeg_install():
 
 def start_ffmpeg(video, fps, bitrate, rtmp):
     ffmpeg_process = subprocess.Popen(["ffmpeg", "-re", "-i", video, "-preset", "ultrafast", "-vcodec", "libx264", "-r", fps, "-g", "60", "-b:v", bitrate, "-c:a", "aac", "-b:a", "92k", "-strict", "-2", "-f", "flv", rtmp])
+    ffmpeg_process.wait()
     return ffmpeg_process.pid
 
 def start_streaming():
