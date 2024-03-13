@@ -43,15 +43,7 @@ def ffmpeg_install():
 
 def start_streaming():
     ffmpeg_install()
-    if not m_skip:
-        global m_config
-        m_config.setdefault("rtmp",input("请输入推流地址："))
-        m_config.setdefault("video",input("请输入视频文件路径："))
-        m_config.setdefault("bitrate",input("请输入码率："))
-        m_config.setdefault("fps",input("请输入帧率："))
-        m_config.setdefault("index",input("请输入视频文件序号（起始索引为0）："))
-    else:
-        load_config()
+    load_config()
     load_videos()
     while True:
         index = int(m_config.get("index", 0))
@@ -68,28 +60,5 @@ def start_streaming():
 def stop_streaming():
     print("Stopping live streaming")
 
-# START MENU
-def main():
-    print("""
-    ######################################
-    #                                    #
-    #   Welcome to FFMPEG Stream Server  #
-    #                                    #
-    ######################################
-    Select an option:
-    1. 启动推流（配置文件）
-    3. 启动推流（手动输入）
-    2. 停止推流
-    """)
-    choice = input("Enter choice: ")
-    global m_skip
-    if choice == "1":
-        m_skip = True
-        start_streaming()
-    elif choice == "2":
-        m_skip = False
-        stop_streaming()
-    elif choice == "3":
-        stop_streaming()
 
-main()
+start_streaming()
