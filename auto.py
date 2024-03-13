@@ -15,8 +15,7 @@ def start_app():
     with open("live-streaming.pid", "w") as f:
         f.write(str(process.pid))
 
-    # 在一个新的线程中查看日志
-    threading.Thread(target=tail_log).start()
+    tail_log()
 
 def stop_app():
     # 从文件中读取 PID 并停止对应的进程
