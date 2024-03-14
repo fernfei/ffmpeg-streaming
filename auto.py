@@ -13,7 +13,8 @@ def start_app():
     print("Starting the app...")
     # 启动 nohup 进程
     cmd = "nohup python live-streaming.py start > output.log 2>&1 &"
-    process = subprocess.Popen(cmd, shell=True)
+    process = subprocess.Popen(cmd, preexec_fn=os.setpgrp, shell=True)
+
 
     pid = os.getpid()
     # 将 PID 写入到文件中
